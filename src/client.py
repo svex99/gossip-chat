@@ -23,7 +23,7 @@ class Client:
     def __init__(self, name: str, interface: str, port: str):
         self.name = name
         self.id = str(uuid.uuid4())
-        self.pstop = 0.5
+        self.pstop = 0.2
 
         self.spreading = True           # this client is spreading updates
         self.open_clients = {}          # clients awaiting for updates
@@ -193,7 +193,10 @@ class Client:
                         }
                     )
 
+                    if len(self.upd_received) > 200:
+                        self.upd_received = self.upd_received[:100]
                     self.upd_received.append(data['upd_id'])
+
                     await self.queue.put((data['upd_id'], data['name'], data['text']))
 
                 self.snder_sock.disconnect(url)
